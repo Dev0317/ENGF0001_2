@@ -1,3 +1,5 @@
+// Entry point to the program
+
 import processing.serial.*;
 import java.util.LinkedList;
 import java.util.Calendar;
@@ -26,7 +28,9 @@ void mousePressed() {
 }
   
 void keyPressed() {
-  if (myController.textBoxState) {
+  if (key == ESC) {
+    this.myController.writer.close();
+  } else if (myController.textBoxState) {
     myController.model.textBox.keyPress(key, myController);
   }
 }

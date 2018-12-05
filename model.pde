@@ -1,3 +1,5 @@
+// Contains state of application
+
 public class TextBox {
   
   private int x;
@@ -87,9 +89,9 @@ public class Model {
   
   public void initialiseTimes() {
     Calendar time = Calendar.getInstance();
-    time.add(Calendar.SECOND, 1);
+    this.times.add(time.getTime());
     for (int i = 0; i < 8; i++) {
-      time.add(Calendar.SECOND, 2);
+      time.add(Calendar.SECOND, 10);
       this.times.add(time.getTime());
     }
   }
@@ -116,8 +118,12 @@ public class Model {
    return this.setPoint;
  }
  
+ public boolean getHeatingStatus() {
+   return this.isHeatingOn;
+ }
+ 
  public void addToTemps(float temp) {
-   if (this.modCount < 17) {
+   if (this.modCount < 800) {
      this.temps.add(temp);
      this.modCount += 1;
    } else {
@@ -127,7 +133,7 @@ public class Model {
  }
  
  public void addToSetPoints(float setPoint) {
-   if (this.modCount2 < 17) {
+   if (this.modCount2 < 800) {
      this.setPoints.add(setPoint);
      this.modCount2 += 1;
    } else {

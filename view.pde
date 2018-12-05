@@ -1,3 +1,5 @@
+// Presents application data in a meaningful way
+
 public class Coord {
   public final float x;
   public final float y;
@@ -48,9 +50,9 @@ public class View {
     
     textFont(f,14);
     fill(255);
-    for (int i = 0; i < 5; i++) {
-      float temp = 20 + i*5;
-      text(Float.toString(temp) + this.addUnitOfMeasurement(), 100 - 50, this.getYCoord(temp));
+    for (int i = 0; i < (MAX - MIN)/STEP + 1; i++) {
+      float yLabel = MIN + i*STEP;
+      text(Float.toString(yLabel) + this.addUnitOfMeasurement(), 100 - 50, this.getYCoord(yLabel));
     }
   }
   
@@ -86,35 +88,20 @@ public class View {
     text(textBox.getTxt() + this.blinkingChar(), textBox.getX() + PADDING, textBox.getY() + textBox.getHeight() - PADDING);
   }
   
-  public void registerTemps(LinkedList<Float> temps) {
+  public void graphValues(LinkedList<Float> values, char key_) {
     ArrayList<Coord> coords = new ArrayList<Coord>();
     int index = 0;
     
-    for (float temp : temps) {
-      coords.add(new Coord(100 + index*50, this.getYCoord(temp)));
+    for (float value : values) {
+      coords.add(new Coord(100 + index*1, this.getYCoord(value)));
       index += 1;
     }
     
-    stroke(26, 232, 144);
-    strokeWeight(3);
-    
-    for (int j = 0; j < coords.size() - 1; j++) {
-      Coord coord1 = coords.get(j);
-      Coord coord2 = coords.get(j + 1);
-      line(coord1.x, coord1.y, coord2.x, coord2.y);
+    if (key_ == 't') {
+      stroke(26, 232, 144);
+    } else {
+      stroke(154, 116, 222);
     }
-  }
-  
-  public void registerSetPoints(LinkedList<Float> setPoints) {
-    ArrayList<Coord> coords = new ArrayList<Coord>();
-    int index = 0;
-    
-    for (float setPoint : setPoints) {
-      coords.add(new Coord(100 + index*50, this.getYCoord(setPoint)));
-      index += 1;
-    }
-    
-    stroke(154, 116, 222);
     strokeWeight(3);
     
     for (int j = 0; j < coords.size() - 1; j++) {
@@ -136,7 +123,13 @@ public class View {
   }
   
   private float getYCoord(float temp) {
-    return 380 + 13.5*(40 - temp);
+    if (temp > MAX) {
+      return 380 + 270/MIN*(MAX - MAX);
+    } else if (temp < MIN) {
+      return 380 + 270/MIN*(MAX - MIN);
+    } else {
+      return 380 + 270/MIN*(MAX - temp);
+    }
   }
   
   private String addUnitOfMeasurement() {

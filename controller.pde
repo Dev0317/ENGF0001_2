@@ -1,8 +1,11 @@
+// Interface between Model and View, and Processing and arduino
+
 class Controller {
   
   private Model model;
   private View view;
   private Serial port;
+  private PrintWriter writer;
   private boolean textBoxState;
   private boolean firstContact;
   private int timer;
@@ -14,8 +17,10 @@ class Controller {
     this.textBoxState = false;
     this.firstContact = false;
     this.timer = 0;
+    this.writer = createWriter("myLogFile.log");
   }
- 
+  
+
   public void getTemp() {
     if (this.port.available() > 0) {
       String input = this.port.readStringUntil('\n');
@@ -24,9 +29,11 @@ class Controller {
           float temp = float(input);
           this.model.setTemp(temp);
           this.model.addToTemps(temp);
-          this.model.addToSetPoints(this.model.setPoint);
-          if (this.timer > 16 && this.timer % 2 == 0) {
+          this.model.addToSetPoints(this.model.getSetPoint());
+          if (this.timer > 800 && this.timer % 100 == 0) {
             this.model.addToTimes(new Date());
+          } else if (this.timer % 10 == 0) {
+            this.logData(new Date(), temp, this.model.getSetPoint(), this.model.getHeatingStatus());
           }
           this.timer += 1;
         } else {
@@ -63,11 +70,11 @@ class Controller {
   }
   
   public void registerTemps(LinkedList<Float> temps) {
-    this.view.registerTemps(temps);
+    this.view.graphValues(temps, 't');
   }
   
   public void registerSetPoints(LinkedList<Float> setPoints) {
-    this.view.registerSetPoints(setPoints);
+    this.view.graphValues(setPoints, 's');
   }
   
   public void registerTimes(LinkedList<Date> times) {
@@ -82,4 +89,12 @@ class Controller {
     myPort.write('0');
   }
   
+  public void logData(Date timestamp, float temp, float setPoint, boolean status) {
+    SimpleDateFormat ft = new SimpleDateFormat ("dd-M-yyyy HH:mm:ss");
+    this.writer.println(ft.format(timestamp));
+    this.writer.println("temp: " + Float.toString(temp) + " set point: " + Float.toString(setPoint));
+    this.writer.println("heating status: " + String.valueOf(status));
+    this.writer.println("");
+    this.writer.flush();
+  }
 }
