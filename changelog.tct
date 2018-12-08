@@ -1,0 +1,25 @@
+// fixed bug with scaling
+
+private float getYCoord(float temp) {
+    float temperature = temp;
+    float factor1 = 270.0/(MAX - MIN);
+    float factor2 = temperature - MIN;
+    if (temperature > MAX) {
+      return 380;
+    } 
+    else if (temperature < MIN) {
+      return 650;
+    } else {
+      return (650 - factor1*factor2);
+    }
+ }
+
+// fixed bug with timestamps 
+
+public void initialiseTimes() {
+    Calendar time = Calendar.getInstance();
+    for (int i = 0; i < 9; i++) {
+      this.times.add(time.getTime());
+      time.add(Calendar.SECOND, 10);
+    }
+}
