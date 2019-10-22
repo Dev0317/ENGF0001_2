@@ -1,3 +1,3 @@
 # ENGF0001_2
 
-- Before running the program make sure that you have Processing installed and you have downloaded the Serial lib
+- Hosts source code for Processing template of closed-loop control system, that uses Arduino as a DSP, for monitoring and exerting control effort on a given envionmental variable. Contains example firmware for controlling temperature
